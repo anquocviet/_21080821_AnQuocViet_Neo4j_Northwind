@@ -62,10 +62,9 @@ public class ProductDao {
    public List<Product> findProductsHaveUnitPriceLargest() {
       String query = "MATCH (p:Product) WITH MAX(p.unitPrice) AS maxPrice " +
                            "MATCH (p:Product {unitPrice: maxPrice}) RETURN p";
-      Map<String, Object> params = Map.of("unitPrice", 38.0);
       try (Session session = driver.session(sessionConfig)) {
          return session.executeRead(tx -> {
-            Result result = tx.run(query, params);
+            Result result = tx.run(query);
             if (!result.hasNext()) {
                return null;
             }
@@ -100,6 +99,26 @@ public class ProductDao {
                                (x, y) -> y,
                                LinkedHashMap::new
                          ));
+         });
+      }
+   }
+
+   /**
+    * Calc total price of bill by orderID
+    * @param orderID
+    * @return double
+    */
+   public double calcTotalPriceByOrderID(String orderID) {
+      String query = "MATCH (o:Order {orderID: $orderID})-[r:ORDERS]->(p:Product) " +
+                           "RETURN sum(toInteger(r.unitPrice) * r.quantity) AS totalPrice";
+      Map<String, Object> params = Map.of("orderID", orderID);
+      try (Session session = driver.session(sessionConfig)) {
+         return session.executeRead(tx -> {
+            Result result = tx.run(query, params);
+            if (!result.hasNext()) {
+               return 0.0;
+            }
+            return result.single().get("totalPrice").asDouble();
          });
       }
    }

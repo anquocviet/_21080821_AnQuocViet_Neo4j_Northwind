@@ -42,6 +42,11 @@ public class ProductDaoTest {
 //      assertEquals(21, productDao.countCustomersByCountry().size());
    }
 
+   @Test
+   public void testCalcTotalPriceByOrderID() {
+      System.out.println(productDao.calcTotalPriceByOrderID("10248"));
+   }
+
    @AfterAll
    public void tearDown() {
       productDao.close();

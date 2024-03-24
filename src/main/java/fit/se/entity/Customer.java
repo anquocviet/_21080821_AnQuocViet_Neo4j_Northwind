@@ -1,5 +1,6 @@
 package fit.se.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Customer {
+   @JsonProperty("customerID")
    private String id;
    private String contactName;
    private String companyName;
@@ -26,8 +28,13 @@ public class Customer {
    private String address;
    private String phone;
    private String city;
-   private String postCode;
+   private String postalCode;
    private String fax;
    private String region;
 
 }
+
+/*
+ * Tách các thuộc tính contact, address ra thành lớp mới
+ * Keyword: transient: GSon ignore
+ */
